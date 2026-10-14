@@ -187,8 +187,12 @@ with tab_lote:
 with tab_modelo:
     st.subheader("Desempeño")
     mp, mc = b["metricas_prueba"], b["metricas_cv"]
-    st.table(pd.DataFrame({"Prueba (35 % de los datos)": mp, "Validación cruzada K-Fold (media)": mc}).T
+    me = b.get("metricas_entrenamiento", {})
+    st.table(pd.DataFrame({"Entrenamiento (65 %)": me, "Prueba (35 %)": mp,
+                           "Validación cruzada K-Fold (media)": mc}).dropna(axis=1, how="all").T
              .rename(columns={"R2": "R²"}).style.format("{:.3f}"))
+    if "r2_ajustado" in b:
+        st.caption(f"R² ajustado de entrenamiento: {b['r2_ajustado']:.3f}")
     st.subheader("Coeficientes estandarizados")
     coefs = pd.Series({ETIQUETAS[c][0]: b["coeficientes"][c] for c in FEATURES}).sort_values()
     st.plotly_chart(go.Figure(go.Bar(x=coefs.values, y=coefs.index, orientation="h", marker_color="#2a7ab0"))
