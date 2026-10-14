@@ -1,0 +1,5 @@
+-r requirements.txt
+matplotlib>=3.7
+seaborn>=0.13
+ipywidgets>=8.0
+jupyter
